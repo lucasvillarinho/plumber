@@ -11,7 +11,7 @@ type Injector struct {
 	container *do.Injector
 }
 
-func New() *Injector {
+func NewInjector() *Injector {
 	return &Injector{
 		container: do.New(),
 	}
@@ -20,6 +20,7 @@ func New() *Injector {
 func Register[T any](injector *Injector, constructor any) error {
 	if fn, ok := constructor.(func(*do.Injector) (T, error)); ok {
 		do.Provide(injector.container, fn)
+		return nil
 	}
 
 	return errors.New("constructor must be a function that takes a *do.Injector and returns a value and an error")
