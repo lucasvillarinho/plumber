@@ -1,0 +1,6 @@
+backgroundColor: '#000000'
+border:
+  headerInfoColor: '#39493d'
+  outputColor: '#484831'
+text:
+  primaryColor: '#f1f1f1'
