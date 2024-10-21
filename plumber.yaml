@@ -1,6 +1,0 @@
-process:
-  - name: "processo1"
-    cmd: "while true; do echo 'Rodando em loop infinito'; sleep 1; done"
-
-  - name: "processo2"
-    cmd: "while true; do echo 'Rodando em loop infinito'; sleep 2; done"

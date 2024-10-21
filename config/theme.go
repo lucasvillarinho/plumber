@@ -11,16 +11,18 @@ import (
 )
 
 type ThemeFile struct {
-	BackgroundColor string `mapstructure:"backgroundColor" yaml:"backgroundColor"`
+	Colors struct {
+		BackgroundColor string `mapstructure:"backgroundColor"`
 
-	Border struct {
-		HeaderInfoColor string `mapstructure:"headerInfoColor" yaml:"headerInfoColor"`
-		OutputColor     string `mapstructure:"outputColor" yaml:"outputColor"`
-	} `mapstructure:"border" yaml:"border"`
+		Border struct {
+			HeaderInfoColor string `mapstructure:"headerInfoColor"`
+			OutputColor     string `mapstructure:"outputColor"`
+		} `mapstructure:"border"`
 
-	Text struct {
-		PrimaryColor string `mapstructure:"primaryColor" yaml:"primaryColor"`
-	} `mapstructure:"text" yaml:"text"`
+		Text struct {
+			PrimaryColor string `mapstructure:"primaryColor"`
+		} `mapstructure:"text"`
+	} `mapstructure:"colors"`
 }
 
 type ThemeConfig struct {
@@ -35,7 +37,7 @@ type ThemeConfig struct {
 
 func NewThemeConfig(injector *inj.Injector) (*ThemeConfig, error) {
 	viper.SetConfigName("default")
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("toml")
 	viper.AddConfigPath("./app/themes")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -50,23 +52,23 @@ func NewThemeConfig(injector *inj.Injector) (*ThemeConfig, error) {
 	return parseThemeToTcellColors(theme)
 }
 
-func parseThemeToTcellColors(th ThemeFile) (*ThemeConfig, error) {
-	bgColor, err := helpers.ParseHexToTcellColor(th.BackgroundColor)
+func parseThemeToTcellColors(themeFile ThemeFile) (*ThemeConfig, error) {
+	bgColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.BackgroundColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid background color: %w", err)
 	}
 
-	borderHeaderInfoColor, err := helpers.ParseHexToTcellColor(th.Border.HeaderInfoColor)
+	borderHeaderInfoColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Border.HeaderInfoColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid header border color: %w", err)
 	}
 
-	borderOutputColor, err := helpers.ParseHexToTcellColor(th.Border.OutputColor)
+	borderOutputColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Border.OutputColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid output border color: %w", err)
 	}
 
-	textPrimaryColor, err := helpers.ParseHexToTcellColor(th.Text.PrimaryColor)
+	textPrimaryColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Text.PrimaryColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid text primary color: %w", err)
 	}

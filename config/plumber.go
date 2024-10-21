@@ -9,17 +9,17 @@ import (
 )
 
 type Process struct {
-	Name string `mapstructure:"name" yaml:"name"`
-	Cmd  string `mapstructure:"cmd" yaml:"cmd"`
+	Name string `mapstructure:"name"`
+	Cmd  string `mapstructure:"cmd"`
 }
 
 type PlumberConfig struct {
-	Process []Process `mapstructure:"process" yaml:"process"`
+	Process []Process `mapstructure:"process"`
 }
 
 func NewPlumberConfig(injector *inj.Injector) (*PlumberConfig, error) {
 	viper.SetConfigName("plumber")
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("toml")
 
 	if err := viper.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("error to read config: %w", err)
