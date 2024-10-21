@@ -11,11 +11,11 @@ import (
 )
 
 type HeaderComponent struct {
-	theme *cfg.Theme
+	theme *cfg.ThemeConfig
 }
 
 func NewHeaderComponent(injector *inj.Injector) (*HeaderComponent, error) {
-	theme, err := inj.Get[*cfg.Theme](injector)
+	theme, err := inj.Get[*cfg.ThemeConfig](injector)
 	if err != nil || theme == nil {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}
@@ -25,7 +25,7 @@ func NewHeaderComponent(injector *inj.Injector) (*HeaderComponent, error) {
 	}, nil
 }
 
-func (hec *HeaderComponent) CreateHeaderPanel() *tview.Flex {
+func (hdc *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 	headerInfoPanel := tview.NewFlex()
 	metaInfoArea := tview.
 		NewTextView().
@@ -33,9 +33,9 @@ func (hec *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 		SetRegions(true)
 	metaInfoArea.
 		SetBorder(true).
-		SetBorderColor(hec.theme.BorderHeaderInfoColor).
+		SetBorderColor(hdc.theme.BorderHeaderInfoColor).
 		SetTitle("🛁[::b] Plumber").
-		SetTitleColor(tcell.Color(hec.theme.TextPrimaryColor)).
+		SetTitleColor(tcell.Color(hdc.theme.TextPrimaryColor)).
 		SetTitleAlign(tview.AlignLeft)
 
 	infoText := "Welcome to Plumber!\n" +
@@ -45,7 +45,7 @@ func (hec *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 		"Users Connected: 5\n"
 
 	metaInfoArea.SetText(infoText)
-	metaInfoArea.SetBackgroundColor(hec.theme.BackgroundColor)
+	metaInfoArea.SetBackgroundColor(hdc.theme.BackgroundColor)
 
 	headerInfoPanel.AddItem(metaInfoArea, 0, 1, false)
 

@@ -10,11 +10,11 @@ import (
 )
 
 type OutputComponent struct {
-	theme *cfg.Theme
+	theme *cfg.ThemeConfig
 }
 
 func NewOutputComponent(injector *ijt.Injector) (*OutputComponent, error) {
-	theme, err := ijt.Get[*cfg.Theme](injector)
+	theme, err := ijt.Get[*cfg.ThemeConfig](injector)
 	if err != nil || theme == nil {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}

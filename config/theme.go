@@ -23,7 +23,7 @@ type ThemeFile struct {
 	} `mapstructure:"text" yaml:"text"`
 }
 
-type Theme struct {
+type ThemeConfig struct {
 	BackgroundColor tcell.Color
 
 	BorderHeaderInfoColor tcell.Color
@@ -33,7 +33,7 @@ type Theme struct {
 	TextPrimaryColor     tcell.Color
 }
 
-func NewThemeConfig(injector *inj.Injector) (*Theme, error) {
+func NewThemeConfig(injector *inj.Injector) (*ThemeConfig, error) {
 	viper.SetConfigName("default")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./app/themes")
@@ -50,7 +50,7 @@ func NewThemeConfig(injector *inj.Injector) (*Theme, error) {
 	return parseThemeToTcellColors(theme)
 }
 
-func parseThemeToTcellColors(th ThemeFile) (*Theme, error) {
+func parseThemeToTcellColors(th ThemeFile) (*ThemeConfig, error) {
 	bgColor, err := helpers.ParseHexToTcellColor(th.BackgroundColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid background color: %w", err)
@@ -71,7 +71,7 @@ func parseThemeToTcellColors(th ThemeFile) (*Theme, error) {
 		return nil, fmt.Errorf("invalid text primary color: %w", err)
 	}
 
-	return &Theme{
+	return &ThemeConfig{
 		BackgroundColor:       bgColor,
 		BorderHeaderInfoColor: borderHeaderInfoColor,
 		BorderOutputColor:     borderOutputColor,
