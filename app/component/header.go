@@ -1,4 +1,4 @@
-package components
+package component
 
 import (
 	"fmt"
@@ -6,16 +6,16 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 
-	"github.com/lucasvillarinho/plumber/app/themes"
-	pkg "github.com/lucasvillarinho/plumber/pkg/injector"
+	cfg "github.com/lucasvillarinho/plumber/config"
+	inj "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type HeaderComponent struct {
-	theme *themes.Theme
+	theme *cfg.Theme
 }
 
-func NewHeaderComponent(injector *pkg.Injector) (*HeaderComponent, error) {
-	theme, err := pkg.Get[*themes.Theme](injector)
+func NewHeaderComponent(injector *inj.Injector) (*HeaderComponent, error) {
+	theme, err := inj.Get[*cfg.Theme](injector)
 	if err != nil || theme == nil {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}

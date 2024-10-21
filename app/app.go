@@ -6,17 +6,18 @@ import (
 
 	"github.com/rivo/tview"
 
-	"github.com/lucasvillarinho/plumber/app/components"
-	"github.com/lucasvillarinho/plumber/app/themes"
-	pkg "github.com/lucasvillarinho/plumber/pkg/injector"
+	"github.com/lucasvillarinho/plumber/app/component"
+	configs "github.com/lucasvillarinho/plumber/config"
+	inj "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type App struct {
 	headerPanel     *tview.Flex
-	headerComponent *components.HeaderComponent
+	headerComponent *component.HeaderComponent
 
 	outputPanel     *tview.List
-	outputComponent *components.OutputComponent
+	outputComponent *component.OutputComponent
+	outputChan      chan string
 
 	layout      *tview.Flex
 	pages       *tview.Pages
@@ -32,20 +33,21 @@ func NewApp() (*App, error) {
 		Application: tview.NewApplication(),
 	}
 
-	injector, err := pkg.NewInjector()
+	injector, err := inj.NewInjector()
 	if err != nil {
 		return nil, err
 	}
 
-	pkg.Register(injector, themes.NewTheme)
+	inj.Register(injector, configs.NewThemeConfig)
+	inj.Register(injector, configs.NewPlumberConfig)
 
-	app.headerComponent, err = components.NewHeaderComponent(injector)
+	app.headerComponent, err = component.NewHeaderComponent(injector)
 	if err != nil {
 		return nil, err
 	}
 	app.headerPanel = app.headerComponent.CreateHeaderPanel()
 
-	app.outputComponent, err = components.NewOutputComponent(injector)
+	app.outputComponent, err = component.NewOutputComponent(injector)
 	if err != nil {
 		return nil, err
 	}

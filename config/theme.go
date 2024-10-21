@@ -1,4 +1,4 @@
-package themes
+package configs
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/lucasvillarinho/plumber/helpers"
-	pkg "github.com/lucasvillarinho/plumber/pkg/injector"
+	inj "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type ThemeFile struct {
@@ -33,18 +33,18 @@ type Theme struct {
 	TextPrimaryColor     tcell.Color
 }
 
-func NewTheme(injector *pkg.Injector) (*Theme, error) {
+func NewThemeConfig(injector *inj.Injector) (*Theme, error) {
 	viper.SetConfigName("default")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./app/themes")
 
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("failed to read config: %w", err)
+		return nil, fmt.Errorf("error to read config: %w", err)
 	}
 
 	var theme ThemeFile
 	if err := viper.Unmarshal(&theme); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+		return nil, fmt.Errorf("error to unmarshal config: %w", err)
 	}
 
 	return parseThemeToTcellColors(theme)

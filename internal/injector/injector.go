@@ -28,7 +28,7 @@ func Register[T any](injector *Injector, constructor func(*Injector) (T, error))
 func Get[T any](injector *Injector) (*T, error) {
 	dep, err := do.Invoke[T](injector.container)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get dependency: %w", err)
+		return nil, fmt.Errorf("error to get dependency: %w", err)
 	}
 	return &dep, nil
 }

@@ -1,20 +1,20 @@
-package components
+package component
 
 import (
 	"fmt"
 
 	"github.com/rivo/tview"
 
-	"github.com/lucasvillarinho/plumber/app/themes"
-	pkg "github.com/lucasvillarinho/plumber/pkg/injector"
+	cfg "github.com/lucasvillarinho/plumber/config"
+	ijt "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type OutputComponent struct {
-	theme *themes.Theme
+	theme *cfg.Theme
 }
 
-func NewOutputComponent(injector *pkg.Injector) (*OutputComponent, error) {
-	theme, err := pkg.Get[*themes.Theme](injector)
+func NewOutputComponent(injector *ijt.Injector) (*OutputComponent, error) {
+	theme, err := ijt.Get[*cfg.Theme](injector)
 	if err != nil || theme == nil {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}
