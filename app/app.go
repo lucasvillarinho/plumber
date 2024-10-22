@@ -8,7 +8,7 @@ import (
 
 	"github.com/lucasvillarinho/plumber/app/component"
 	configs "github.com/lucasvillarinho/plumber/config"
-	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	di "github.com/lucasvillarinho/plumber/internal/injector"
 	psb "github.com/lucasvillarinho/plumber/internal/pubsub"
 )
 
@@ -24,35 +24,45 @@ type App struct {
 	Application *tview.Application
 }
 
+func NewApplication(_ *di.Injector) (*tview.Application, error) {
+	return tview.NewApplication(), nil
+}
+
 func NewApp() (*App, error) {
 	app := &App{
 		headerPanel: tview.NewFlex(),
 		outputPanel: tview.NewList(),
 
-		layout:      tview.NewFlex(),
-		Application: tview.NewApplication(),
+		layout: tview.NewFlex(),
 	}
 
-	injector, err := inj.NewInjector()
+	injector, err := di.NewInjector()
 	if err != nil {
 		return nil, err
 	}
 
-	inj.Register(injector, configs.NewThemeConfig)
-	inj.Register(injector, configs.NewPlumberConfig)
-	inj.Register(injector, psb.NewPubSub[string])
+	di.Register(injector, configs.NewThemeConfig)
+	di.Register(injector, configs.NewPlumberConfig)
+	di.Register(injector, psb.NewPubSub[string])
+	di.Register(injector, NewApplication)
 
 	app.headerComponent, err = component.NewHeaderComponent(injector)
 	if err != nil {
 		return nil, err
 	}
-	app.headerPanel = app.headerComponent.CreateHeaderPanel()
-
 	app.outputComponent, err = component.NewOutputComponent(injector)
 	if err != nil {
 		return nil, err
 	}
+
+	application, err := di.Get[*tview.Application](injector)
+	if err != nil || application == nil {
+		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
+	}
+
+	app.Application = *application
 	app.outputPanel = app.outputComponent.CreateOutputPanel()
+	app.headerPanel = app.headerComponent.CreateHeaderPanel()
 
 	return app, nil
 }
