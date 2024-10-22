@@ -14,16 +14,10 @@ type PubSub[T any] struct {
 	closed bool
 }
 
-func NewPubSub[T any](injector *inj.Injector) error {
-	return inj.Register(injector, func(inj *inj.Injector) (*PubSub[T], error) {
-		return newPubSub[T](), nil
-	})
-}
-
-func newPubSub[T any]() *PubSub[T] {
+func NewPubSub[T any](_ *inj.Injector) (*PubSub[T], error) {
 	return &PubSub[T]{
 		subscribers: make([]chan T, 0),
-	}
+	}, nil
 }
 
 func (s *PubSub[T]) Subscribe() <-chan T {

@@ -9,6 +9,7 @@ import (
 	"github.com/lucasvillarinho/plumber/app/component"
 	configs "github.com/lucasvillarinho/plumber/config"
 	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	psb "github.com/lucasvillarinho/plumber/internal/pubsub"
 )
 
 type App struct {
@@ -17,7 +18,6 @@ type App struct {
 
 	outputPanel     *tview.List
 	outputComponent *component.OutputComponent
-	outputChan      chan string
 
 	layout      *tview.Flex
 	pages       *tview.Pages
@@ -40,6 +40,7 @@ func NewApp() (*App, error) {
 
 	inj.Register(injector, configs.NewThemeConfig)
 	inj.Register(injector, configs.NewPlumberConfig)
+	inj.Register(injector, psb.NewPubSub[string])
 
 	app.headerComponent, err = component.NewHeaderComponent(injector)
 	if err != nil {
