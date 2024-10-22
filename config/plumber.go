@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	di "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type Process struct {
@@ -17,7 +17,7 @@ type PlumberConfig struct {
 	Process []Process `mapstructure:"process"`
 }
 
-func NewPlumberConfig(injector *inj.Injector) (*PlumberConfig, error) {
+func NewPlumberConfig(injector *di.Injector) (*PlumberConfig, error) {
 	viper.SetConfigName("plumber")
 	viper.SetConfigType("toml")
 

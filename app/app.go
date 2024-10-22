@@ -22,6 +22,8 @@ type App struct {
 	layout      *tview.Flex
 	pages       *tview.Pages
 	Application *tview.Application
+
+	pubSub *psb.PubSub[string]
 }
 
 func NewApplication(_ *di.Injector) (*tview.Application, error) {
@@ -32,8 +34,7 @@ func NewApp() (*App, error) {
 	app := &App{
 		headerPanel: tview.NewFlex(),
 		outputPanel: tview.NewList(),
-
-		layout: tview.NewFlex(),
+		layout:      tview.NewFlex(),
 	}
 
 	injector, err := di.NewInjector()
@@ -60,40 +61,61 @@ func NewApp() (*App, error) {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}
 
+	pubsub, err := di.Get[*psb.PubSub[string]](injector)
+	if err != nil || pubsub == nil {
+		return nil, fmt.Errorf("failed to inject PubSub instance: %w", err)
+	}
+
 	app.Application = *application
 	app.outputPanel = app.outputComponent.CreateOutputPanel()
 	app.headerPanel = app.headerComponent.CreateHeaderPanel()
+	app.pubSub = *pubsub
 
 	return app, nil
 }
 
-func (app *App) updateOutputPanel() {
+func (ap *App) updateOutputPanel() {
 	counter := 0
 	for {
 		time.Sleep(1 * time.Second)
 		counter++
 
-		app.Application.QueueUpdateDraw(func() {
+		ap.Application.QueueUpdateDraw(func() {
 			newMessage := fmt.Sprintf("Log entry %d: This is a new log message", counter)
-			app.outputPanel.AddItem(newMessage, "", 0, nil)
+			ap.outputPanel.AddItem(newMessage, "", 0, nil)
 		})
 	}
 }
 
-func (app *App) Setup() {
-	app.layout = tview.NewFlex().
+func (ap *App) Setup() {
+	ap.layout = tview.NewFlex().
 		SetDirection(tview.FlexRow).
-		AddItem(app.headerPanel, 0, 2, false).
-		AddItem(app.outputPanel, 0, 10, false)
+		AddItem(ap.headerPanel, 0, 2, false).
+		AddItem(ap.outputPanel, 0, 10, false)
 
-	go app.updateOutputPanel()
+	go ap.updateOutputPanel()
 }
 
-func (app *App) Run() error {
-	app.Setup()
+func (ap *App) Run() error {
+	ap.Setup()
 
-	app.pages = tview.NewPages()
-	app.pages.AddPage("base", app.layout, true, true)
+	ap.pages = tview.NewPages()
+	ap.pages.AddPage("base", ap.layout, true, true)
 
-	return app.Application.SetRoot(app.pages, true).Run()
+	ap.startLogPublishing()
+
+	return ap.Application.SetRoot(ap.pages, true).Run()
+}
+
+func (app *App) startLogPublishing() {
+	go func() {
+		counter := 0
+		for {
+			time.Sleep(1 * time.Second)
+			counter++
+
+			newMessage := fmt.Sprintf("Log entry %d: This is a new log message", counter)
+			app.pubSub.Publish(newMessage)
+		}
+	}()
 }

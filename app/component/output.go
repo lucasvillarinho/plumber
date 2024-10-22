@@ -44,5 +44,17 @@ func (oc *OutputComponent) CreateOutputPanel() *tview.List {
 
 	outputPanel.SetBackgroundColor(oc.theme.BackgroundColor)
 
+	go oc.updateComponent(&oc.application, outputPanel)
+
 	return outputPanel
+}
+
+func (oc *OutputComponent) updateComponent(app *tview.Application, outputPanel *tview.List) {
+	subscriber := oc.pubsub.Subscribe()
+
+	for msg := range subscriber {
+		app.QueueUpdateDraw(func() {
+			outputPanel.AddItem(msg, "", 0, nil)
+		})
+	}
 }

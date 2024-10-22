@@ -7,15 +7,15 @@ import (
 	"github.com/rivo/tview"
 
 	cfg "github.com/lucasvillarinho/plumber/config"
-	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	di "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type HeaderComponent struct {
 	theme *cfg.ThemeConfig
 }
 
-func NewHeaderComponent(injector *inj.Injector) (*HeaderComponent, error) {
-	theme, err := inj.Get[*cfg.ThemeConfig](injector)
+func NewHeaderComponent(injector *di.Injector) (*HeaderComponent, error) {
+	theme, err := di.Get[*cfg.ThemeConfig](injector)
 	if err != nil || theme == nil {
 		return nil, fmt.Errorf("failed to inject Theme instance: %w", err)
 	}
@@ -25,7 +25,7 @@ func NewHeaderComponent(injector *inj.Injector) (*HeaderComponent, error) {
 	}, nil
 }
 
-func (hdc *HeaderComponent) CreateHeaderPanel() *tview.Flex {
+func (hc *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 	headerInfoPanel := tview.NewFlex()
 	metaInfoArea := tview.
 		NewTextView().
@@ -33,9 +33,9 @@ func (hdc *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 		SetRegions(true)
 	metaInfoArea.
 		SetBorder(true).
-		SetBorderColor(hdc.theme.BorderHeaderInfoColor).
+		SetBorderColor(hc.theme.BorderHeaderInfoColor).
 		SetTitle("🛁[::b] Plumber").
-		SetTitleColor(tcell.Color(hdc.theme.TextPrimaryColor)).
+		SetTitleColor(tcell.Color(hc.theme.TextPrimaryColor)).
 		SetTitleAlign(tview.AlignLeft)
 
 	infoText := "Welcome to Plumber!\n" +
@@ -45,7 +45,7 @@ func (hdc *HeaderComponent) CreateHeaderPanel() *tview.Flex {
 		"Users Connected: 5\n"
 
 	metaInfoArea.SetText(infoText)
-	metaInfoArea.SetBackgroundColor(hdc.theme.BackgroundColor)
+	metaInfoArea.SetBackgroundColor(hc.theme.BackgroundColor)
 
 	headerInfoPanel.AddItem(metaInfoArea, 0, 1, false)
 

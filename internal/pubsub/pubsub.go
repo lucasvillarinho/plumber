@@ -3,7 +3,7 @@ package pubsub
 import (
 	"sync"
 
-	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	di "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type PubSub[T any] struct {
@@ -14,7 +14,7 @@ type PubSub[T any] struct {
 	closed bool
 }
 
-func NewPubSub[T any](_ *inj.Injector) (*PubSub[T], error) {
+func NewPubSub[T any](_ *di.Injector) (*PubSub[T], error) {
 	return &PubSub[T]{
 		subscribers: make([]chan T, 0),
 	}, nil

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 
 	hlp "github.com/lucasvillarinho/plumber/helper"
-	inj "github.com/lucasvillarinho/plumber/internal/injector"
+	di "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
 type ThemeFile struct {
@@ -35,7 +35,7 @@ type ThemeConfig struct {
 	TextPrimaryColor     tcell.Color
 }
 
-func NewThemeConfig(injector *inj.Injector) (*ThemeConfig, error) {
+func NewThemeConfig(injector *di.Injector) (*ThemeConfig, error) {
 	viper.SetConfigName("default")
 	viper.SetConfigType("toml")
 	viper.AddConfigPath("./app/themes")
