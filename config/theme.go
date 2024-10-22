@@ -6,7 +6,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/spf13/viper"
 
-	"github.com/lucasvillarinho/plumber/helpers"
+	hlp "github.com/lucasvillarinho/plumber/helper"
 	inj "github.com/lucasvillarinho/plumber/internal/injector"
 )
 
@@ -53,22 +53,22 @@ func NewThemeConfig(injector *inj.Injector) (*ThemeConfig, error) {
 }
 
 func parseThemeToTcellColors(themeFile ThemeFile) (*ThemeConfig, error) {
-	bgColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.BackgroundColor)
+	bgColor, err := hlp.ParseHexToTcellColor(themeFile.Colors.BackgroundColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid background color: %w", err)
 	}
 
-	borderHeaderInfoColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Border.HeaderInfoColor)
+	borderHeaderInfoColor, err := hlp.ParseHexToTcellColor(themeFile.Colors.Border.HeaderInfoColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid header border color: %w", err)
 	}
 
-	borderOutputColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Border.OutputColor)
+	borderOutputColor, err := hlp.ParseHexToTcellColor(themeFile.Colors.Border.OutputColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid output border color: %w", err)
 	}
 
-	textPrimaryColor, err := helpers.ParseHexToTcellColor(themeFile.Colors.Text.PrimaryColor)
+	textPrimaryColor, err := hlp.ParseHexToTcellColor(themeFile.Colors.Text.PrimaryColor)
 	if err != nil {
 		return nil, fmt.Errorf("invalid text primary color: %w", err)
 	}
