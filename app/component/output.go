@@ -13,7 +13,7 @@ import (
 type OutputComponent struct {
 	theme       *cfg.ThemeConfig
 	pubsub      *psb.PubSub[string]
-	application tview.Application
+	application *tview.Application
 }
 
 func NewOutputComponent(injector *di.Injector) (*OutputComponent, error) {
@@ -27,9 +27,15 @@ func NewOutputComponent(injector *di.Injector) (*OutputComponent, error) {
 		return nil, fmt.Errorf("failed to inject PubSub instance: %w", err)
 	}
 
+	application, err := di.Get[*tview.Application](injector)
+	if err != nil || application == nil {
+		return nil, fmt.Errorf("failed to inject Application instance: %w", err)
+	}
+
 	return &OutputComponent{
-		theme:  *theme,
-		pubsub: *pubsub,
+		theme:       *theme,
+		pubsub:      *pubsub,
+		application: *application,
 	}, nil
 }
 
@@ -44,7 +50,9 @@ func (oc *OutputComponent) CreateOutputPanel() *tview.List {
 
 	outputPanel.SetBackgroundColor(oc.theme.BackgroundColor)
 
-	go oc.updateComponent(&oc.application, outputPanel)
+	go oc.updateComponent(oc.application, outputPanel)
+
+	fmt.Println("msg")
 
 	return outputPanel
 }
@@ -54,6 +62,9 @@ func (oc *OutputComponent) updateComponent(app *tview.Application, outputPanel *
 
 	for msg := range subscriber {
 		app.QueueUpdateDraw(func() {
+
+			fmt.Println("msg", msg)
+
 			outputPanel.AddItem(msg, "", 0, nil)
 		})
 	}

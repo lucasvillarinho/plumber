@@ -92,8 +92,6 @@ func (ap *App) Setup() {
 		SetDirection(tview.FlexRow).
 		AddItem(ap.headerPanel, 0, 2, false).
 		AddItem(ap.outputPanel, 0, 10, false)
-
-	go ap.updateOutputPanel()
 }
 
 func (ap *App) Run() error {
